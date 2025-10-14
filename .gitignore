@@ -1,0 +1,90 @@
+# Model files (large)
+*.h5
+*.pt
+*.pth
+*.pkl
+*.joblib
+*.model
+
+# Specific large model files
+Brain_tumor/model.h5
+Brain_tumor/model_v2.h5
+Pneumonia_Detection/pneumonia.pth
+Skin_cancer/skincancer_model.pt
+
+# Database files
+Website\users.db
+*.db
+*.sqlite
+*.sqlite3
+
+# Upload directories and user data
+**/static/uploads/**
+**/uploads/**
+**/blood_uploads/**
+**/prescription_uploads/**
+
+# Training and testing datasets
+Brain_tumor/Testing/
+Brain_tumor/Training/
+**/Testing/
+**/Training/
+**/Dataset/
+**/dataset/
+**/Data/
+**/data/
+
+# Virtual environments
+**/.venv_convert/
+**/myenv/
+**/venv/
+**/.venv/
+**/env/
+**/.env/
+
+# Large data files
+*.csv
+*.npy
+*.npz
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Video files
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.wmv
+
+# Large image datasets
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+
+# Jupyter notebook checkpoints
+**/.ipynb_checkpoints/
+
+# Python cache
+**/__pycache__/
+*.pyc
+*.pyo
+
+# Model directories
+**/model_saved/
+**/models/
+**/checkpoints/
+
+# Log files
+*.log
+*.out
+*.err
+
+# OS specific files
+.DS_Store
+Thumbs.db
+desktop.ini

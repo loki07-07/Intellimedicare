@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Blood Report Analysis</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; padding: 2rem; }
+    .container { max-width: 720px; margin: 0 auto; }
+    h1 { font-size: 1.5rem; margin: 0 0 1rem; }
+    p.help { opacity: .8; margin: .25rem 0 1rem; }
+    .card { border: 1px solid rgba(0,0,0,.12); border-radius: 12px; padding: 1rem; }
+    .row { display: grid; gap: .75rem; }
+    .actions { display: flex; gap: .75rem; align-items: center; }
+    input[type="file"] { padding: .5rem; }
+    button { padding: .6rem 1rem; border-radius: 10px; border: 1px solid rgba(0,0,0,.2); cursor: pointer; }
+    button:disabled { opacity: .6; cursor: not-allowed; }
+    .error { color: #b00020; margin-top: 1rem; }
+    ul { margin: 1rem 0 0; padding-left: 1.25rem; }
+    .empty { opacity: .8; margin-top: .75rem; }
+    .dropzone {
+      margin-top: .5rem; padding: 1rem; border: 2px dashed rgba(0,0,0,.25); border-radius: 12px; text-align: center;
+    }
+    .dropzone.dragover { background: rgba(0,0,0,.04); }
+    small.muted { opacity: .7; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Blood Report Analysis</h1>
+    <p class="help">Upload a PDF or image of a lab report. The output shows a concise list of possible conditions/deficiencies (if any).</p>
+
+    <div class="card">
+      <form id="uploadForm" method="POST" enctype="multipart/form-data">
+        <div class="row">
+          <div class="actions">
+            <input id="fileInput" type="file" name="file"
+                   accept=".pdf,.png,.jpg,.jpeg,.tif,.tiff,.bmp,.webp" required />
+            <button id="submitBtn" type="submit">Analyze</button>
+          </div>
+
+          <div id="dropzone" class="dropzone">
+            Drag & drop a PDF/image here, or use the file picker above.
+          </div>
+
+          <small class="muted">Supported: PDF, PNG, JPG, JPEG, TIF/TIFF, BMP, WEBP</small>
+        </div>
+      </form>
+
+      {% if error %}
+        <div class="error">{{ error }}</div>
+      {% endif %}
+
+      {% if data and data|length > 0 %}
+        <h2 style="margin-top:1rem;">Possible conditions/deficiencies</h2>
+        <ul>
+          {% for item in data %}
+            <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      {% elif not error %}
+        <div class="empty">No results yet. Upload a report to begin.</div>
+      {% endif %}
+    </div>
+
+    <p class="help" style="margin-top:1rem;">
+      <small class="muted">
+        This tool is for informational triage only and does not provide medical diagnoses.
+      </small>
+    </p>
+  </div>
+
+  <script>
+    // Disable submit if no file selected
+    const fileInput = document.getElementById('fileInput');
+    const submitBtn = document.getElementById('submitBtn');
+    const form = document.getElementById('uploadForm');
+    const dropzone = document.getElementById('dropzone');
+
+    function updateButton() { submitBtn.disabled = !fileInput.files.length; }
+    fileInput.addEventListener('change', updateButton);
+    updateButton();
+
+    // Drag & drop support
+    ;['dragenter','dragover'].forEach(ev =>
+      dropzone.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); dropzone.classList.add('dragover'); })
+    );
+    ;['dragleave','drop'].forEach(ev =>
+      dropzone.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); dropzone.classList.remove('dragover'); })
+    );
+    dropzone.addEventListener('drop', e => {
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+        fileInput.files = e.dataTransfer.files;
+        updateButton();
+      }
+    });
+
+    // Prevent double-submits
+    form.addEventListener('submit', () => { submitBtn.disabled = true; submitBtn.textContent = 'Analyzing…'; });
+  </script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+D:\Intellimedicare\Knee_injury\lr\lr_abnormal.pkl
+D:\Intellimedicare\Knee_injury\lr\lr_acl.pkl
+D:\Intellimedicare\Knee_injury\lr\lr_meniscus.pkl

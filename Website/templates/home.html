@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<title>IntelliMediCare</title>
+
+<style>
+  /* Background + base */
+  /* Base outer glow for all cards (visible even before flip) */
+
+
+  .welcome {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    background: linear-gradient(90deg, #60a5fa, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+  }
+
+  .card .description strong {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+  }
+.card {
+  position: relative;
+  overflow: visible;                 /* let the glow bleed out */
+  filter: drop-shadow(0 10px 24px rgba(0,0,0,.45));
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: -3px;                       /* slightly outside the card */
+  border-radius: 14px;               /* a bit larger than .content radius */
+  background: linear-gradient(90deg, #ffb77a, #ff7a1a, #ffb77a);
+  opacity: .55;                      /* subtle by default */
+  filter: blur(8px);
+  transition: opacity .25s ease, transform .25s ease, filter .25s ease;
+  z-index: -1;                       /* sit behind the card */
+}
+
+.card:hover::before {
+  opacity: 1;
+  transform: scale(1.03);
+  filter: blur(10px);
+}
+
+/* Optional: per-card glow colors */
+.card--blood::before {
+  background: linear-gradient(90deg, #fda4af, #ef4444, #fda4af);
+}
+.card--rx::before {
+  background: linear-gradient(90deg, #6ee7b7, #10b981, #6ee7b7);
+}
+.card--scan::before {
+  background: linear-gradient(90deg, #c4b5fd, #8b5cf6, #c4b5fd);
+}
+
+/* Give the inner panel a subtle rim so the glow reads better */
+.content {
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.06) inset,
+    0 12px 22px rgba(0,0,0,.45);
+  border-radius: 12px;
+}
+.front::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  box-shadow: 0 0 30px 2px rgba(255, 255, 255, 0.06) inset;
+  pointer-events: none;
+}
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+    background-image: linear-gradient(to right, #434343 0%, black 100%);
+  }
+
+  /* ===== GRID LAYOUT ===== */
+  .parent {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: auto auto auto;   /* welcome, cards, logout */
+  gap: 24px;
+  min-height: 100vh;
+  padding: 24px;
+  align-items: start;
+  justify-items: center;
+}
+
+/* Welcome */
+.div2 { grid-column: 2 / span 3; grid-row: 1; }
+
+/* Cards */
+.div3 { grid-column: 2; grid-row: 2; }
+.div4 { grid-column: 3; grid-row: 2; }
+.div5 { grid-column: 4; grid-row: 2; }
+
+/* Logout (just below cards) */
+.div6 { 
+  grid-column: 3; 
+  grid-row: 3; 
+  margin-top: 20px;   /* adjust space below cards */
+}
+
+
+  /* Logo box (replace img src) */
+  .logo {
+    width: 64px; height: 64px; border-radius: 12px;
+    display:flex; align-items:center; justify-content:center;
+    background: #fff; color:#111; font-weight: 700;
+    box-shadow: 0 10px 24px rgba(0,0,0,.5);
+  }
+
+  /* Welcome heading (nice font style) */
+  .welcome {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+  }
+
+  /* ====== FLIP CARD (ElSombrero2 variant) ====== */
+  .card {
+    width: 240px;
+    height: 280px;
+    position: relative;
+    text-decoration: none;
+    display: block;
+  }
+  .content {
+    width: 100%; height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 300ms;
+    box-shadow: 0 0 10px 1px #000000ee;
+    border-radius: 10px;
+    position: relative;
+  }
+  .front, .back {
+    background-color: #151515;
+    position: absolute; inset: 0;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    border-radius: 10px; overflow: hidden;
+  }
+  .card:hover .content { transform: rotateY(180deg); }
+
+  .back { display:flex; justify-content:center; align-items:center; }
+  .back::before {
+    position:absolute; content:' '; display:block; width:160px; height:160%;
+    background: linear-gradient(90deg, transparent, #ff9966, #ff9966, #ff9966, #ff9966, transparent);
+    animation: rotation_481 5000ms infinite linear;
+  }
+  .back-content {
+    position:absolute; width:99%; height:99%; background:#151515; border-radius:10px;
+    color:#fff; display:flex; flex-direction:column; justify-content:center; align-items:center;
+    gap:14px; padding:12px; text-align:center;
+  }
+  @keyframes rotation_481 { 0%{transform:rotateZ(0)} 100%{transform:rotateZ(360deg)} }
+
+  .front { transform: rotateY(180deg); color:#fff; }
+  .front .front-content {
+    position:absolute; inset:0; padding:12px;
+    display:flex; flex-direction:column; justify-content:flex-end; gap:10px; z-index:2;
+  }
+  .front-content .badge {
+    background:#00000055; padding:4px 10px; border-radius:10px; backdrop-filter:blur(2px);
+    width:fit-content; font-size:12px;
+  }
+  .description {
+    box-shadow: 0 0 10px 5px #00000088; width:100%; padding:10px; background:#00000099;
+    backdrop-filter: blur(5px); border-radius:8px;
+  }
+  .title { font-size:13px; display:flex; justify-content:space-between; align-items:center; gap:8px; }
+  .card-footer { color:#ffffff88; margin-top:5px; font-size:10px; }
+
+  .front .img { position:absolute; inset:0; z-index:1; }
+  .circle { width:90px; height:90px; border-radius:50%; position:absolute; filter:blur(15px);
+            animation:floating 2600ms infinite linear; top:20%; left:15%; }
+  #right { left:65%; top:10%; width:40px; height:40px; animation-delay:-1800ms; }
+  #bottom { left:30%; top:55%; width:150px; height:150px; animation-delay:-800ms; }
+  @keyframes floating { 0%{transform:translateY(0)} 50%{transform:translateY(10px)} 100%{transform:translateY(0)} }
+
+  /* Accents */
+  .card--blood .circle { background:#f87171; } .card--blood #right{background:#b91c1c;} .card--blood #bottom{background:#ef4444;}
+  .card--rx    .circle { background:#34d399; } .card--rx    #right{background:#065f46;} .card--rx    #bottom{background:#10b981;}
+  .card--scan  .circle { background:#c4b5fd; } .card--scan  #right{background:#4c1d95;} .card--scan  #bottom{background:#8b5cf6;}
+
+  /* Logout button */
+  .logout {
+    background: linear-gradient(135deg, #dc2626, #991b1b);
+    padding: 14px 36px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.4);
+    font-weight: 700; color:#fff; text-decoration:none; box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    display: inline-block;
+  }
+  .logout:hover { transform: translateY(-2px); background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 10px 22px rgba(0,0,0,0.45); }
+</style>
+</head>
+<body>
+
+<div class="parent">
+  <!-- div1: Logo -->
+  <div class="div1">
+    <div class="logo">IM</div>
+  </div>
+
+  <!-- div2: Welcome -->
+  <div class="div2">
+    <h1 class="welcome">Welcome, {{ username }}!</h1>
+  </div>
+
+  <!-- div3: Card 1 -->
+  <div class="div3">
+    <a href="{{ url_for('blood_report') }}" class="card card--blood" aria-label="Open Blood Report">
+      <div class="content">
+        <div class="back">
+          <div class="back-content">
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="#ffffff">
+              <path d="M12 2s6 7.305 6 11a6 6 0 1 1-12 0c0-3.695 6-11 6-11zm0 6a1 1 0 0 0-1 1c0 .551.449 1 1 1s1-.449 1-1a1 1 0 0 0-1-1z"/>
+            </svg>
+            <strong>Blood Report</strong>
+            <span class="text-xs" style="opacity:.7">View metrics & insights</span>
+          </div>
+        </div>
+        <div class="front">
+          <div class="img">
+            <div class="circle"></div><div class="circle" id="right"></div><div class="circle" id="bottom"></div>
+          </div>
+          <div class="front-content">
+            <small class="badge">Reports</small>
+            <div class="description">
+              <div class="title">
+                <p><strong>Blood Report</strong></p>
+                <svg fill="#20c997" height="16" width="16" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+                  <g transform="scale(8,8)"><path d="M25,27l-9,-6.75l-9,6.75v-23h18z"/></g>
+                </svg>
+              </div>
+              <p class="card-footer">Lab values • Trends</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <!-- div4: Card 2 -->
+  <div class="div4">
+    <a href="{{ url_for('prescription') }}" class="card card--rx" aria-label="Open Prescription Analysis">
+      <div class="content">
+        <div class="back">
+          <div class="back-content">
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="#ffffff" viewBox="0 0 24 24">
+              <path d="M7 2h10v2H7zM5 6h14v2H5zM7 10h10v2H7zM7 14h5v2H7zM7 18h8v2H7z"/>
+            </svg>
+            <strong>Prescription Analysis</strong>
+            <span class="text-xs" style="opacity:.7">Dosage checks & flags</span>
+          </div>
+        </div>
+        <div class="front">
+          <div class="img">
+            <div class="circle"></div><div class="circle" id="right"></div><div class="circle" id="bottom"></div>
+          </div>
+          <div class="front-content">
+            <small class="badge">Analysis</small>
+            <div class="description">
+              <div class="title">
+                <p><strong>Prescription Analysis</strong></p>
+                <svg fill="#20c997" height="16" width="16" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+                  <g transform="scale(8,8)"><path d="M25,27l-9,-6.75l-9,6.75v-23h18z"/></g>
+                </svg>
+              </div>
+              <p class="card-footer">Interactions • Warnings</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <!-- div5: Card 3 -->
+  <div class="div5">
+    <a href="{{ url_for('scan') }}" class="card card--scan" aria-label="Open Scan Analysis">
+      <div class="content">
+        <div class="back">
+          <div class="back-content">
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="#ffffff" viewBox="0 0 24 24">
+              <path d="M3 5h18v2H3zM5 9h14v10H5zM7 11v6h10v-6z"/>
+            </svg>
+            <strong>Scan Analysis</strong>
+            <span class="text-xs" style="opacity:.7">Images • Findings</span>
+          </div>
+        </div>
+        <div class="front">
+          <div class="img">
+            <div class="circle"></div><div class="circle" id="right"></div><div class="circle" id="bottom"></div>
+          </div>
+          <div class="front-content">
+            <small class="badge">Imaging</small>
+            <div class="description">
+              <div class="title">
+                <p><strong>Scan Analysis</strong></p>
+                <svg fill="#20c997" height="16" width="16" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+                  <g transform="scale(8,8)"><path d="M25,27l-9,-6.75l-9,6.75v-23h18z"/></g>
+                </svg>
+              </div>
+              <p class="card-footer">CT/MRI • Summaries</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <!-- div6: Logout -->
+  <div class="div6">
+    <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+  </div>
+</div>
+
+</body>
+</html>

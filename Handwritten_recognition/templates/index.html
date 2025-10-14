@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Intellimedicare</title>
+</head>
+<body>
+    <h2>Intellimedicare</h2>
+    <form method="post">
+        <label for="medicine">Enter Medicine Name:</label>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <input type="text" id="medicine" name="medicine" required>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if data %}
+        {% if data.error %}
+            <p style="color: red;">❌ {{ data.error }}</p>
+        {% else %}
+            <h3>Results for "{{ data['Medicine Name'] }}"</h3>
+            <ul>
+                <li><strong>Brand Name:</strong> {{ data['Brand Name'] }}</li>
+                <li><strong>Manufacturer:</strong> {{ data['Manufacturer'] }}</li>
+                <li><strong>Salt Composition:</strong> {{ data['Salt'] }}</li>
+                <li><strong>Price:</strong> {{ data['Price'] }}</li>
+                <li><strong>Uses:</strong> {{ data['Uses'] }}</li>
+                <li><strong>Side Effects:</strong> {{ data['Side Effects'] }}</li>
+                <li><strong>URL:</strong> <a href="{{ data['URL'] }}" target="_blank">View Product</a></li>
+            </ul>
+        {% endif %}
+    {% endif %}
+</body>
+</html>

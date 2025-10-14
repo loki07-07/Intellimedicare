@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Brain Tumor Detection</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 0.3; }
+        }
+
+        /* Main container with glassmorphism */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            margin: 60px auto;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            animation: slideUp 1s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Header section */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .logo i {
+            font-size: 48px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.3rem;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        /* Upload form */
+        .upload-form {
+            margin: 50px 0;
+        }
+
+        .upload-area {
+            position: relative;
+            border: 3px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 60px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .upload-area:hover {
+            border-color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .upload-area.dragover {
+            border-color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+            animation: bounce 2s ease-in-out infinite;
+            display: block;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .upload-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .upload-hint {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        input[type="file"] {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* Analyze button */
+        .analyze-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border: none;
+            color: white;
+            padding: 18px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(238, 90, 36, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .analyze-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(238, 90, 36, 0.4);
+        }
+
+        .analyze-btn:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .analyze-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .analyze-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Loading animation */
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .loading.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #4ecdc4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* Results section */
+        .output {
+            margin-top: 50px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+            display: none;
+        }
+
+        .output.show {
+            opacity: 1;
+            transform: translateY(0);
+            display: block;
+        }
+
+        .image-preview {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .output img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .output img:hover {
+            transform: scale(1.02);
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: iconPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.1); filter: brightness(1.2); }
+        }
+
+        .result {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            overflow: hidden;
+            white-space: nowrap;
+            animation: typewriter 2s steps(20) 1s both;
+        }
+
+        .result.positive {
+            color: #ff6b6b;
+            text-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+        }
+
+        .result.negative {
+            color: #4ecdc4;
+            text-shadow: 0 0 20px rgba(78, 205, 196, 0.5);
+        }
+
+        @keyframes typewriter {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .confidence {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid #4ecdc4;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ecdc4, #44a08d);
+            border-radius: 4px;
+            width: 0%;
+            animation: fillProgress 2s ease-out 1.5s forwards;
+        }
+
+        @keyframes fillProgress {
+            to { width: var(--progress-width, 85%); }
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4ecdc4;
+            animation: breathe 2s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        .error-message {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            color: #ff6b6b;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Floating elements */
+        .floating-element {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: floatAround 15s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+            animation-duration: 12s;
+        }
+
+        .floating-element:nth-child(2) {
+            top: 20%;
+            right: 10%;
+            animation-delay: 2s;
+            animation-duration: 18s;
+        }
+
+        .floating-element:nth-child(3) {
+            bottom: 20%;
+            left: 15%;
+            animation-delay: 4s;
+            animation-duration: 14s;
+        }
+
+        @keyframes floatAround {
+            0%, 100% {
+                transform: translateY(0px) translateX(0px) scale(1);
+            }
+            25% {
+                transform: translateY(-30px) translateX(20px) scale(1.2);
+            }
+            50% {
+                transform: translateY(-10px) translateX(-15px) scale(0.8);
+            }
+            75% {
+                transform: translateY(-25px) translateX(10px) scale(1.1);
+            }
+        }
+
+        /* Medical grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.1rem;
+            }
+
+            .upload-area {
+                padding: 40px 15px;
+            }
+
+            .logo i {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating background elements -->
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    
+    <!-- Animated particles container -->
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+            </div>
+            <h1>Brain Tumor Detection</h1>
+            <p class="subtitle">Upload a brain MRI image to detect the presence and type of tumor using AI analysis</p>
+        </div>
+
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span>AI Analysis Ready</span>
+        </div>
+
+        <form class="upload-form" id="uploadForm" method="POST" enctype="multipart/form-data">
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <div class="upload-text">Drop your MRI image here or click to browse</div>
+                <div class="upload-hint">Supports JPG, PNG, DICOM formats • Max 10MB</div>
+                <input type="file" name="image" id="imageInput" accept="image/*" required>
+            </div>
+
+            <button type="submit" class="analyze-btn" id="analyzeBtn" disabled>
+                <i class="fas fa-search"></i> Analyze Image
+            </button>
+        </form>
+
+        <div class="error-message" id="errorMessage">
+            Please select an image file to analyze.
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <div class="loading-text">Analyzing brain scan... Please wait</div>
+        </div>
+
+        <div class="output" id="output">
+            <div class="image-preview">
+                <img id="previewImage" alt="Uploaded MRI Scan">
+            </div>
+            
+            <div class="result-card">
+                <div class="result-icon" id="resultIcon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="result" id="result">Analysis Complete</div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                
+                <div class="confidence" id="confidence">
+                    Confidence Level: 0%
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create animated particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.width = Math.random() * 10 + 5 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // File upload handling
+        const uploadArea = document.getElementById('uploadArea');
+        const imageInput = document.getElementById('imageInput');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const loading = document.getElementById('loading');
+        const output = document.getElementById('output');
+        const previewImage = document.getElementById('previewImage');
+        const uploadForm = document.getElementById('uploadForm');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                imageInput.files = files;
+                handleFileSelect(files[0]);
+            }
+        });
+
+        imageInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+
+        function handleFileSelect(file) {
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImage.src = e.target.result;
+                    analyzeBtn.disabled = false;
+                    errorMessage.classList.remove('show');
+                    
+                    // Update upload area to show file selected
+                    uploadArea.innerHTML = `
+                        <i class="fas fa-check-circle upload-icon" style="color: #4ecdc4;"></i>
+                        <div class="upload-text">Image Selected: ${file.name}</div>
+                        <div class="upload-hint">Click "Analyze Image" to proceed</div>
+                        <input type="file" name="image" id="imageInput" accept="image/*" required style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+                    `;
+                    
+                    // Re-attach event listener to the new input
+                    const newInput = uploadArea.querySelector('input[type="file"]');
+                    newInput.files = imageInput.files;
+                    newInput.addEventListener('change', (e) => {
+                        if (e.target.files.length > 0) {
+                            imageInput.files = e.target.files;
+                            handleFileSelect(e.target.files[0]);
+                        }
+                    });
+                };
+                reader.readAsDataURL(file);
+            } else {
+                errorMessage.textContent = 'Please select a valid image file (JPG, PNG, etc.)';
+                errorMessage.classList.add('show');
+            }
+        }
+
+        // Form submission with loading state
+        uploadForm.addEventListener('submit', (e) => {
+            if (!imageInput.files || imageInput.files.length === 0) {
+                e.preventDefault();
+                errorMessage.textContent = 'Please select an image file to analyze.';
+                errorMessage.classList.add('show');
+                return;
+            }
+
+            // Show loading state
+            loading.classList.add('active');
+            analyzeBtn.disabled = true;
+            output.classList.remove('show');
+            errorMessage.classList.remove('show');
+            
+            // Update status indicator
+            const statusIndicator = document.querySelector('.status-indicator span');
+            statusIndicator.textContent = 'Processing...';
+        });
+
+        // If there are results from Flask (this would be populated by your template)
+        function displayResults(result, confidence, imageUrl) {
+            loading.classList.remove('active');
+            output.classList.add('show');
+            
+            // Update result display
+            const resultElement = document.getElementById('result');
+            const confidenceElement = document.getElementById('confidence');
+            const iconElement = document.getElementById('resultIcon');
+            const progressFill = document.getElementById('progressFill');
+            
+            resultElement.textContent = result;
+            
+            // Determine if it's a positive (tumor detected) or negative result
+            const isPositive = result.includes('🔴') || result.toLowerCase().includes('tumor detected');
+            resultElement.className = isPositive ? 'result positive' : 'result negative';
+            
+            confidenceElement.textContent = `Confidence Level: ${confidence}`;
+            
+            // Set appropriate icon
+            const iconClass = isPositive ? 'fas fa-exclamation-triangle' : 'fas fa-check-circle';
+            iconElement.innerHTML = `<i class="${iconClass}"></i>`;
+            iconElement.style.color = isPositive ? '#ff6b6b' : '#4ecdc4';
+            
+            // Extract percentage from confidence string for progress bar
+            const percentMatch = confidence.match(/(\d+\.?\d*)/);
+            const percent = percentMatch ? parseFloat(percentMatch[1]) : 0;
+            progressFill.style.setProperty('--progress-width', percent + '%');
+            
+            // Update image preview if provided
+            if (imageUrl) {
+                previewImage.src = imageUrl;
+            }
+            
+            analyzeBtn.disabled = false;
+            
+            // Update status indicator
+            const statusIndicator = document.querySelector('.status-indicator span');
+            statusIndicator.textContent = 'Analysis Complete';
+        }
+
+        // Initialize particles on page load
+        window.addEventListener('load', () => {
+            createParticles();
+        });
+
+        // Add some dynamic text effects
+        function addTextAnimation() {
+            const subtitle = document.querySelector('.subtitle');
+            const text = subtitle.textContent;
+            subtitle.textContent = '';
+            
+            for (let i = 0; i < text.length; i++) {
+                setTimeout(() => {
+                    subtitle.textContent += text[i];
+                }, i * 50);
+            }
+        }
+
+        // Initialize text animation after a delay
+        setTimeout(addTextAnimation, 1000);
+
+        // Check if there are results to display (this would be set by your Flask template)
+        // You'll need to modify your Flask template to include these values
+        const flaskResult = "{{ result if result else '' }}";
+        const flaskConfidence = "{{ confidence if confidence else '' }}";
+        const flaskImageUrl = "{{ url_for('static', filename=image_file) if image_file else '' }}";
+        
+        if (flaskResult && flaskConfidence) {
+            // Wait a moment for the page to load, then show results
+            setTimeout(() => {
+                displayResults(flaskResult, flaskConfidence, flaskImageUrl);
+            }, 500);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Prescription Analyzer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 2rem; }
+    .card { border: 1px solid #eee; border-radius: 12px; padding: 1rem 1.2rem; margin: 1rem 0; box-shadow: 0 1px 4px rgba(0,0,0,.04); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+    .error { color: #b00020; margin-top: 1rem; }
+    .muted { color: #666; font-size: 0.95rem; }
+    button { padding: .6rem 1rem; border-radius: 10px; border: none; background: #0d6efd; color: white; cursor: pointer; }
+    button:hover { background: #0b5ed7; }
+    input[type=file], input[type=text] { margin: .5rem 0 1rem; width: 100%; max-width: 320px; padding: .4rem; }
+    a { color: #0d6efd; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .kv { margin: .15rem 0; }
+    .kv b { display: inline-block; width: 130px; }
+  </style>
+</head>
+<body>
+  <h1>Prescription Analyzer</h1>
+  <p class="muted">Enter a medicine name, or upload a prescription (PDF/Image). We'll analyze and fetch details from 1mg.</p>
+
+  <form method="post" enctype="multipart/form-data">
+    <input type="text" name="medicine" placeholder="Enter medicine name" />
+    <br />
+    <input type="file" name="file" accept=".pdf,.png,.jpg,.jpeg,.tif,.tiff,.bmp,.webp" />
+    <br />
+    <button type="submit">Analyze</button>
+  </form>
+
+  {% if error %}
+    <div class="error">⚠️ {{ error }}</div>
+  {% endif %}
+
+  {% if extracted and extracted|length > 0 %}
+    <h2>Extracted Medicines</h2>
+    <ul>
+      {% for m in extracted %}
+        <li>{{ m }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if data and data|length > 0 %}
+    <h2>Results</h2>
+    <div class="grid">
+      {% for row in data %}
+        <div class="card">
+          <div class="kv"><b>Query:</b> {{ row.get("Medicine Name", "—") }}</div>
+          <div class="kv"><b>Brand:</b> {{ row.get("Brand Name", "—") }}</div>
+          <div class="kv"><b>Manufacturer:</b> {{ row.get("Manufacturer", "—") }}</div>
+          <div class="kv"><b>Salt:</b> {{ row.get("Salt", "—") }}</div>
+          <div class="kv"><b>Price:</b> {{ row.get("Price", "—") }}</div>
+          <div class="kv"><b>Uses:</b> {{ row.get("Uses", "—") }}</div>
+          <div class="kv"><b>Side Effects:</b> {{ row.get("Side Effects", "—") }}</div>
+          <div class="kv"><b>Link:</b> {% if row.get("URL") %}<a href="{{ row['URL'] }}" target="_blank" rel="noopener">Open</a>{% else %}—{% endif %}</div>
+          {% if row.get("error") %}
+            <div class="error">{{ row["error"] }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</body>
+</html>

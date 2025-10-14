@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Skin Cancer Classifier</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 2rem; }
+    .card { border: 1px solid #eee; border-radius: 12px; padding: 1rem 1.2rem; margin: 1rem 0; box-shadow: 0 1px 4px rgba(0,0,0,.04); }
+    .error { color: #b00020; margin: 1rem 0; }
+    .btn { background:#0d6efd;color:white;border:none;border-radius:10px;padding:.6rem 1rem;cursor:pointer }
+    .btn:hover { background:#0b5ed7; }
+    img { max-width: 100%; height: auto; border-radius: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Skin Cancer Classifier</h1>
+  <p>Upload a dermoscopic image. The model predicts <b>Benign</b> or <b>Malignant</b>.</p>
+
+  <form action="/predict" method="post" enctype="multipart/form-data" class="card">
+    <input type="file" name="file" accept=".png,.jpg,.jpeg,.webp,.bmp,.tif,.tiff" required />
+    <br/><br/>
+    <button class="btn" type="submit">Predict</button>
+  </form>
+
+  {% if error %}
+    <div class="error">⚠️ {{ error }}</div>
+  {% endif %}
+
+  {% if result %}
+    <div class="card">
+      <h2>Prediction</h2>
+      <p><b>Label:</b> {{ result.pred_label }} (confidence: {{ result.confidence }})</p>
+      <img src="{{ result.image_url }}" alt="uploaded image" />
+    </div>
+  {% endif %}
+</body>
+</html>

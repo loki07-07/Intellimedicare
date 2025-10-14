@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Prescription Analyzer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Your existing external CSS (kept) -->
+  <link rel="stylesheet" href="static/uploads/css/common.css">
+
+  <!-- Poppins aesthetic font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+  :root{
+    --bg: linear-gradient(to right, #434343 0%, #000 100%);
+    --card: rgba(255,255,255,0.06);
+    --stroke: rgba(255,255,255,0.14);
+    --muted: #a3a3a3;
+    --primary: #0d6efd;
+    --primary-2: #60a5fa;
+    --accent: #a78bfa;
+    --success: #10b981;
+    --danger: #ef4444;
+  }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: #fff;
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Page frame */
+  .wrap{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 64px;
+  }
+
+  /* Fancy heading */
+  h1 {
+    margin: 0 0 10px;
+    font-size: clamp(28px, 4vw, 46px);
+    font-weight: 700;
+    letter-spacing: .5px;
+    line-height: 1.1;
+    background: linear-gradient(90deg, var(--primary-2), var(--accent), var(--primary-2));
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 5s ease-in-out infinite;
+    text-align: center;
+  }
+  @keyframes shimmer{
+    0%{ background-position: 0% 50%; }
+    50%{ background-position: 100% 50%; }
+    100%{ background-position: 0% 50%; }
+  }
+
+  .muted {
+    color: var(--muted);
+    font-size: .98rem;
+    text-align: center;
+    margin: 0 0 26px;
+  }
+
+  /* Form card */
+  .form-card{
+    margin: 0 auto 26px;
+    max-width: 880px;
+    background: var(--card);
+    border: 1px solid var(--stroke);
+    backdrop-filter: blur(8px);
+    border-radius: 20px;
+    padding: 22px 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .form-card:hover{
+    transform: translateY(-3px) rotateX(1deg);
+    box-shadow: 0 28px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08);
+  }
+
+  form{
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 18px 16px;
+    align-items: center;
+  }
+
+  /* Text input */
+  .text-input{
+    grid-column: 1 / -1;
+    max-width: 520px;
+    width: 100%;
+    border-radius: 12px;
+    background: rgba(0,0,0,.35);
+    border: 1px solid rgba(255,255,255,.18);
+    color: #eaeaea;
+    padding: 12px 14px;
+    outline: none;
+    transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease;
+  }
+  .text-input::placeholder{ color:#9aa0a6; }
+  .text-input:focus{
+    border-color: rgba(99,102,241,.6);
+    box-shadow: 0 0 0 4px rgba(99,102,241,.18), 0 12px 30px rgba(0,0,0,.35);
+    transform: translateY(-1px);
+  }
+
+  /* Custom file upload (enhanced) */
+  .custum-file-upload {
+    height: 200px;
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed rgba(255,255,255,.25);
+    background-color: rgba(17,17,17,.65);
+    padding: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 24px 40px -16px rgba(0,0,0,.55);
+    position: relative;
+    overflow: hidden;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  .custum-file-upload::before{
+    content:"";
+    position:absolute;
+    inset:-2px;
+    border-radius:18px;
+    background: radial-gradient(80% 60% at 50% 0%, rgba(167,139,250,.25), transparent 60%),
+                radial-gradient(80% 60% at 50% 100%, rgba(96,165,250,.25), transparent 60%);
+    opacity:.35;
+    filter: blur(14px);
+    z-index:-1;
+    transition: opacity .25s ease;
+  }
+  .custum-file-upload:hover{
+    transform: translateY(-3px) scale(1.02);
+    border-color: rgba(167,139,250,.6);
+    box-shadow: 0 34px 70px -22px rgba(0,0,0,.6);
+  }
+  .custum-file-upload:hover::before{ opacity:.6; }
+
+  .custum-file-upload .icon { display:flex; align-items:center; justify-content:center; }
+  .custum-file-upload .icon svg { height: 86px; fill: #e8e8e8; opacity:.92; transition: transform .25s ease; }
+  .custum-file-upload:hover .icon svg{ transform: translateY(-2px); }
+
+  .custum-file-upload .text { display:flex; align-items:center; justify-content:center; }
+  .custum-file-upload .text span { font-weight: 500; color: #e8e8e8; opacity:.95; white-space: nowrap; max-width: 280px; overflow: hidden; text-overflow: ellipsis; }
+
+  .custum-file-upload input { display: none; }
+
+  /* Uploaded pulse */
+  .custum-file-upload.uploaded{
+    border-color: var(--success);
+    animation: pulse 1.2s ease;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 rgba(34,197,94,.7); }
+    50% { box-shadow: 0 0 22px rgba(34,197,94,.9); }
+    100% { box-shadow: 0 0 0 rgba(34,197,94,.7); }
+  }
+
+  /* CTA button */
+  .btn {
+    grid-column: 1 / -1;
+    justify-self: start;
+    padding: 12px 22px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.18);
+    background: linear-gradient(135deg, #ef4444, #f97316);
+    color: #fff;
+    font-weight: 700;
+    letter-spacing:.3px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform .15s ease, box-shadow .2s ease;
+    box-shadow: 0 14px 26px rgba(0,0,0,.35);
+  }
+  .btn::after{
+    content:"";
+    position:absolute;
+    top:0; left:-40%;
+    width:40%; height:100%;
+    transform: skewX(-20deg);
+    background: linear-gradient(90deg, rgba(255,255,255,.0), rgba(255,255,255,.25), rgba(255,255,255,0));
+    transition: left .5s ease;
+  }
+  .btn:hover::after{ left: 120%; }
+  .btn:hover{ transform: translateY(-2px); box-shadow: 0 18px 38px rgba(0,0,0,.45); }
+  .btn:active{ transform: translateY(0); }
+
+  /* Results grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+    margin-top: 12px;
+  }
+
+  .card {
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 16px;
+    padding: 16px 16px 18px;
+    background: rgba(255,255,255,.05);
+    box-shadow: 0 10px 22px rgba(0,0,0,.28);
+    backdrop-filter: blur(6px);
+    transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp .45s ease both;
+  }
+  .card:hover{
+    transform: translateY(-4px);
+    border-color: rgba(99,102,241,.45);
+    box-shadow: 0 22px 44px rgba(0,0,0,.45);
+  }
+  .card::before{
+    content:"";
+    position:absolute; inset:-2px;
+    border-radius: 18px;
+    background: radial-gradient(60% 40% at 50% 0%, rgba(99,102,241,.18), transparent 60%),
+                radial-gradient(60% 40% at 50% 100%, rgba(96,165,250,.18), transparent 60%);
+    opacity:.25; filter: blur(10px); z-index:-1;
+    transition: opacity .22s ease;
+  }
+  .card:hover::before{ opacity:.5; }
+
+  @keyframes fadeUp{
+    from{ opacity:0; transform: translateY(8px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+
+  .kv { margin: .25rem 0; color:#e8e8e8; }
+  .kv b { display: inline-block; width: 140px; color:#cfcfcf; font-weight:600; }
+  .error { color: #ff6b81; margin-top: .7rem; }
+
+  /* Loaders */
+  #preloader, #form-loader {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: var(--bg);
+    display:flex; justify-content:center; align-items:center;
+    z-index: 9999; flex-direction: column;
+  }
+  #form-loader { display:none; background: rgba(0,0,0,.85); }
+
+  .spinner {
+    border: 6px solid rgba(255,255,255,.2);
+    border-top: 6px solid var(--primary-2);
+    border-radius: 50%;
+    width: 60px; height: 60px;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin { 100% { transform: rotate(360deg); } }
+  .loading-text { margin-top: 14px; font-size: 1rem; color:#fff; }
+
+  /* Responsive tweaks */
+  @media (max-width: 720px){
+    form{ grid-template-columns: 1fr; }
+    .btn{ justify-self: stretch; text-align:center; }
+    .custum-file-upload{ width: 100%; }
+  }
+  </style>
+</head>
+<body>
+  <!-- Initial page preloader -->
+  <div id="preloader">
+    <div class="spinner"></div>
+    <div class="loading-text">Loading Prescription Analyzer...</div>
+  </div>
+
+  <!-- Form submit loader -->
+  <div id="form-loader">
+    <div class="spinner"></div>
+    <div class="loading-text">Analyzing Prescription...</div>
+  </div>
+
+  <div class="wrap">
+    <h1>Prescription Analyzer</h1>
+    <p class="muted">Enter a medicine name, or upload a prescription (PDF/Image). We'll analyze and fetch details from 1mg.</p>
+
+    <div class="form-card">
+      <form method="post" enctype="multipart/form-data" id="rx-form">
+        <input class="text-input" type="text" name="medicine" placeholder="Enter medicine name" />
+
+        <label class="custum-file-upload" id="uploadBox">
+          <div class="icon">
+            <!-- upload icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M19 13v6H5v-6H3v8h18v-8zM11 11V3H9l4-4 4 4h-2v8z"/>
+            </svg>
+          </div>
+          <div class="text"><span id="uploadText">Click to upload file</span></div>
+          <input id="fileInput" type="file" name="file" accept=".pdf,.png,.jpg,.jpeg,.tif,.tiff,.bmp,.webp" />
+        </label>
+
+        <button class="btn" type="submit">Analyze</button>
+      </form>
+    </div>
+
+    {% if error %}
+      <div class="error">⚠️ {{ error }}</div>
+    {% endif %}
+
+    {% if extracted and extracted|length > 0 %}
+      <h2>Extracted Medicines</h2>
+      <ul>
+        {% for m in extracted %}
+          <li>{{ m }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% if data and data|length > 0 %}
+      <h2>Results</h2>
+      <div class="grid">
+        {% for row in data %}
+          <div class="card">
+            <div class="kv"><b>Query:</b> {{ row.get("Medicine Name", "—") }}</div>
+            <div class="kv"><b>Brand:</b> {{ row.get("Brand Name", "—") }}</div>
+            <div class="kv"><b>Manufacturer:</b> {{ row.get("Manufacturer", "—") }}</div>
+            <div class="kv"><b>Salt:</b> {{ row.get("Salt", "—") }}</div>
+            <div class="kv"><b>Price:</b> {{ row.get("Price", "—") }}</div>
+            <div class="kv"><b>Uses:</b> {{ row.get("Uses", "—") }}</div>
+            <div class="kv"><b>Side Effects:</b> {{ row.get("Side Effects", "—") }}</div>
+            <div class="kv"><b>Link:</b> {% if row.get("URL") %}<a href="{{ row['URL'] }}" target="_blank" rel="noopener">Open</a>{% else %}—{% endif %}</div>
+            {% if row.get("error") %}
+              <div class="error">{{ row["error"] }}</div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    // Page preloader (hide on load)
+    window.addEventListener("load", () => {
+      const pre = document.getElementById("preloader");
+      pre && (pre.style.display = "none");
+    });
+
+    // Upload animation + filename
+    const fileInput = document.getElementById('fileInput');
+    const uploadBox = document.getElementById('uploadBox');
+    const uploadText = document.getElementById('uploadText');
+
+    if (fileInput) {
+      fileInput.addEventListener('change', () => {
+        if (fileInput.files && fileInput.files.length > 0) {
+          uploadBox.classList.add('uploaded');
+          uploadText.textContent = "Uploaded: " + fileInput.files[0].name;
+        }
+      });
+    }
+
+    // Show loader on form submit
+    const form = document.getElementById('rx-form');
+    if (form) {
+      form.addEventListener('submit', () => {
+        const loader = document.getElementById('form-loader');
+        loader && (loader.style.display = 'flex');
+      });
+    }
+  </script>
+</body>
+</html>

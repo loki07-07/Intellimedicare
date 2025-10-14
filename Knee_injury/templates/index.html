@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>MRNet Case Prediction</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 2rem; }
+    .card { border: 1px solid #eee; border-radius: 12px; padding: 1rem 1.2rem; margin: 1rem 0; box-shadow: 0 1px 4px rgba(0,0,0,.04); }
+    .error { color: #b00020; margin-top: 1rem; }
+    .btn { padding: .6rem 1rem; border-radius: 10px; border: none; background: #0d6efd; color: white; cursor: pointer; }
+    .btn:hover { background: #0b5ed7; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+    .kv { margin: .2rem 0; }
+    .muted { color: #666; }
+    a { color: #0d6efd; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <h1>MRNet Case Prediction</h1>
+  <p class="muted">Device: {{ device }} • <a href="{{ url_for('batch') }}">Batch mode</a></p>
+
+  <form action="{{ url_for('predict_single') }}" method="post" enctype="multipart/form-data" class="card">
+    <div class="grid">
+      <div>
+        <label>Axial (.npy)</label><br/>
+        <input type="file" name="axial" accept=".npy" required />
+      </div>
+      <div>
+        <label>Coronal (.npy)</label><br/>
+        <input type="file" name="coronal" accept=".npy" required />
+      </div>
+      <div>
+        <label>Sagittal (.npy)</label><br/>
+        <input type="file" name="sagittal" accept=".npy" required />
+      </div>
+    </div>
+    <br/>
+    <button class="btn" type="submit">Predict</button>
+    {% if error %}
+      <div class="error">⚠️ {{ error }}</div>
+    {% endif %}
+  </form>
+
+  {% if result %}
+    <div class="card">
+      <h2>Probabilities</h2>
+      <div class="kv"><b>Abnormality:</b> {{ result.P_abnormal }}</div>
+      <div class="kv"><b>ACL tear:</b> {{ result.P_acl }}</div>
+      <div class="kv"><b>Meniscal tear:</b> {{ result.P_meniscus }}</div>
+    </div>
+  {% endif %}
+</body>
+</html>

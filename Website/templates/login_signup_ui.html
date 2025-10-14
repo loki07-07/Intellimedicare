@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login / Sign Up UI</title>
+  <link href="https://fonts.googleapis.com/css?family=Oswald|Roboto" rel="stylesheet" />
+  <style>
+    body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(to right, #434343 0%, black 100%);
+  overflow: hidden;
+}
+
+
+
+    .container {
+  position: relative;
+  width: 600px;
+  margin: 30px auto;
+  height: 320px;
+  background-color: #111; /* changed from #999ede */
+  transition: all 0.5s;
+}
+
+.box::before,
+.box::after {
+  content: "";
+  position: absolute;
+  background-color: #1a1a1a; /* darker tone */
+  transform: rotateX(52deg) rotateY(15deg) rotateZ(-38deg);
+  transition: all 0.5s;
+}
+
+.box::after {
+  background-color: #222; /* even darker to create depth */
+}
+
+
+    .box::before {
+      top: 50px;
+      left: 152px;
+      width: 300px;
+      height: 285px;
+    }
+
+    .box::after {
+      background-color: #a5aae4;
+      top: -10px;
+      left: 80px;
+      width: 320px;
+      height: 180px;
+    }
+
+    .container-forms {
+      position: relative;
+    }
+
+    .table {
+      display: table;
+      width: 100%;
+      height: 100%;
+    }
+
+    .table-cell {
+      display: table-cell;
+      vertical-align: middle;
+      transition: all 0.5s;
+    }
+
+    .btn {
+      cursor: pointer;
+      text-align: center;
+      margin: 0 auto;
+      width: 60px;
+      color: #fff;
+      background-color: #ff73b3;
+      padding: 10px 15px;
+      transition: all 0.5s;
+    }
+
+    .btn:hover {
+      opacity: 0.7;
+    }
+
+    input {
+      margin: 0 auto 15px;
+      display: block;
+      width: 220px;
+      padding: 10px 15px;
+      transition: all 0.3s;
+    }
+
+    .container-info {
+      font-size: 0;
+      text-align: center;
+    }
+
+    .info-item {
+      display: inline-block;
+      width: 50%;
+      height: 320px;
+      vertical-align: top;
+      color: #fff;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+
+    .info-item p {
+      font-size: 20px;
+      margin: 20px;
+    }
+
+    .info-item .btn {
+      background-color: transparent;
+      border: 1px solid #fff;
+    }
+
+    .info-item:nth-child(2) .table-cell {
+      padding-left: 35px;
+    }
+
+    .info-item .table-cell {
+      padding-right: 35px;
+    }
+
+    .container-form {
+      overflow: hidden;
+      position: absolute;
+      left: 30px;
+      top: -30px;
+      width: 305px;
+      height: 380px;
+      background-color: #fff;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      transition: all 0.5s;
+    }
+
+    .container-form::before {
+      content: "✔";
+      position: absolute;
+      left: 160px;
+      top: -50px;
+      color: #5356ad;
+      font-size: 130px;
+      opacity: 0;
+      transition: all 0.5s;
+    }
+
+    .form-item {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      transition: all 0.5s;
+    }
+
+    .form-item.sign-up {
+      left: -100%;
+      opacity: 0;
+    }
+
+    .form-item.log-in {
+      left: 0;
+      opacity: 1;
+    }
+
+    .container.log-in .box::before {
+      left: 180px;
+      top: 62px;
+      height: 265px;
+    }
+
+    .container.log-in .box::after {
+      top: 22px;
+      left: 192px;
+      width: 324px;
+      height: 220px;
+    }
+
+    .container.log-in .container-form {
+      left: 265px;
+    }
+
+    .container.log-in .form-item.sign-up {
+      left: 0;
+      opacity: 1;
+    }
+
+    .container.log-in .form-item.log-in {
+      left: -100%;
+      opacity: 0;
+    }
+
+    .container.active {
+      width: 260px;
+      height: 140px;
+      margin-top: -70px;
+    }
+
+    .container.active .container-form {
+      left: 30px;
+      width: 200px;
+      height: 200px;
+    }
+
+    .container.active .container-form::before {
+      opacity: 1;
+      left: 51px;
+      top: 5px;
+    }
+
+    .container.active input,
+    .container.active .btn,
+    .container.active .info-item {
+      display: none;
+      opacity: 0;
+      height: 0;
+      padding: 0;
+      margin: 0;
+    }
+
+    .container.active .form-item {
+      height: 100%;
+    }
+
+    .container.active .info-item {
+      height: 0%;
+      opacity: 0;
+    }
+
+    .rabbit {
+      width: 50px;
+      height: 50px;
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      z-index: 3;
+      fill: #fff;
+    }
+  </style>
+  
+</head>
+<body>
+
+  <div class="container">
+    <div class="box"></div>
+    <div class="container-forms">
+      <div class="container-info">
+        <div class="info-item">
+          <div class="table">
+            <div class="table-cell">
+              <p>Have an account?</p>
+              <div class="btn">Log in</div>
+            </div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="table">
+            <div class="table-cell">
+              <p>Don't have an account?</p>
+              <div class="btn">Sign up</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container-form">
+        <div class="form-item log-in">
+          <div class="table">
+            <div class="table-cell">
+              <form method="POST" action="/login">
+  <input type="text" name="username" placeholder="Username" required />
+  <input type="password" name="password" placeholder="Password" required />
+ <button type="submit" class="btn" style="display: block; margin: 0 auto;">Log in</button>
+</form>
+
+            </div>
+          </div>
+        </div>
+        <div class="form-item sign-up">
+          <div class="table">
+            <div class="table-cell">
+             <form method="POST" action="/signup">
+  <input type="text" name="email" placeholder="Email" required />
+  <input type="text" name="fullName" placeholder="Full Name" required />
+  <input type="text" name="username" placeholder="Username" required />
+  <input type="password" name="password" placeholder="Password" required />
+<button type="submit" class="btn" style="display: block; margin: 0 auto;">Sign up</button>
+
+</form>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a class="box-item" href="https://codepen.io/Anna_Batura/" target="_blank">
+    <svg class="rabbit" viewBox="0 0 600 600" version="1.2">
+      <path id="rabbit" d="M300,300 ..." />
+    </svg>
+  </a>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(".info-item .btn").click(function () {
+      $(".container").toggleClass("log-in");
+    });
+    $(".container-form .btn").click(function () {
+      $(".container").addClass("active");
+    });
+  </script>
+
+</body>
+</html>

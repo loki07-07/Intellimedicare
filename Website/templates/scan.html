@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scan Analysis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: linear-gradient(to right, #434343 0%, #000 100%);
+      --card: rgba(255,255,255,0.06);
+      --stroke: rgba(255,255,255,0.14);
+      --muted: #a3a3a3;
+      --primary: #6366f1;
+      --success: #22c55e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: #fff;
+      display: flex; justify-content: center; align-items: center;
+      min-height: 100vh; padding: 20px;
+    }
+
+    .container {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 36px 40px;
+      width: 100%; max-width: 800px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+      text-align: center;
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+    .container:hover { transform: translateY(-3px); box-shadow: 0 34px 80px rgba(0,0,0,0.55); }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 2.2em;
+      font-weight: 700;
+      background: linear-gradient(90deg, #60a5fa, #a78bfa, #60a5fa);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 6s infinite;
+    }
+    @keyframes shimmer {
+      0%{ background-position: 0% 50%; }
+      50%{ background-position: 100% 50%; }
+      100%{ background-position: 0% 50%; }
+    }
+
+    .subtle { margin: 0 0 14px; opacity: .85; font-size: .95rem; }
+    .tag { display: inline-block; padding: 6px 14px; border-radius: 999px; background: rgba(255,255,255,.08); font-size: .85rem; margin-bottom: 20px; }
+
+    form { margin-top: 20px; display: grid; gap: 20px; }
+
+    .row { display: grid; gap: 16px; }
+    @media (min-width: 640px) { .row.two { grid-template-columns: 1fr 1fr; } }
+
+    label { display:block; text-align:left; margin:0 0 6px 2px; font-weight: 500; }
+
+    select, input[type="file"] {
+      width: 100%; padding: 12px 14px; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.25);
+      background: rgba(255,255,255,.1);
+      color: #fff;
+      transition: all .25s ease;
+    }
+    select:hover, input[type="file"]:hover {
+      border-color: var(--primary);
+      background: rgba(255,255,255,.18);
+    }
+    option { color: #000; }
+
+    /* Upload animation */
+    input[type="file"].uploaded {
+      border-color: var(--success);
+      animation: pulse 1.2s ease;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 rgba(34,197,94,.7); }
+      50% { box-shadow: 0 0 18px rgba(34,197,94,.9); }
+      100% { box-shadow: 0 0 0 rgba(34,197,94,.7); }
+    }
+
+    button[type="submit"] {
+      background: linear-gradient(135deg, #6366f1, #4338ca);
+      color: #fff; padding: 14px 16px; font-size: 1em;
+      border: none; border-radius: 10px; cursor: pointer;
+      font-weight: 600;
+      transition: all .25s ease;
+      box-shadow: 0 14px 26px rgba(0,0,0,.35);
+    }
+    button[type="submit"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px rgba(0,0,0,.45);
+    }
+
+    .result {
+      margin-top: 28px; font-size: 1.05em;
+      background: rgba(255,255,255,.06);
+      padding: 20px; border-radius: 12px; text-align: left;
+      border: 1px solid rgba(255,255,255,.18);
+      animation: fadeUp .5s ease both;
+    }
+    @keyframes fadeUp {
+      from{ opacity:0; transform: translateY(8px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
+
+    .image-preview { margin-top: 18px; }
+    .image-preview img { max-width: 100%; border-radius: 12px; border: 3px solid #fff; }
+
+    .back-link {
+      margin-top: 26px; display: inline-block;
+      text-decoration: none; color: white;
+      border: 2px solid white; padding: 10px 20px;
+      border-radius: 8px; transition: .25s;
+    }
+    .back-link:hover { background-color: rgba(255,255,255,.1); }
+
+    /* Probabilities with animated fill */
+    .prob { display:flex; align-items:center; gap:12px; margin:6px 0; }
+    .bar { flex:1; height:10px; background:#222; border-radius:999px; overflow:hidden; }
+    .fill { height:100%; background:#60a5fa; width:0; transition: width 1s ease; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Scan Analysis</h1>
+    <p class="subtle">Choose a scan type, then upload the required file(s).</p>
+    <div class="tag">
+      Selected:
+      {{ 'Knee Injury (MRNet)' if scan_type == 'knee'
+         else ('Pneumonia (X-ray)' if scan_type == 'pneumonia'
+         else ('Skin Cancer' if scan_type == 'skin' else 'Brain Tumor')) }}
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" id="scan-form">
+      <div class="row two">
+        <div>
+          <label for="scan_type">Scan Type</label>
+          <select id="scan_type" name="scan_type" onchange="toggleInputs()">
+            <option value="brain"     {{ 'selected' if scan_type == 'brain'     else '' }}>Brain Tumor</option>
+            <option value="skin"      {{ 'selected' if scan_type == 'skin'      else '' }}>Skin Cancer</option>
+            <option value="knee"      {{ 'selected' if scan_type == 'knee'      else '' }}>Knee Injury (MRNet)</option>
+            <option value="pneumonia" {{ 'selected' if scan_type == 'pneumonia' else '' }}>Pneumonia (X-ray)</option>
+          </select>
+        </div>
+        <div id="single-file-wrap">
+          <label for="image">Upload Image</label>
+          <input id="image" type="file" name="image" accept=".png,.jpg,.jpeg,.webp,.bmp,.tif,.tiff" onchange="fileUploaded(this)">
+        </div>
+      </div>
+
+      <!-- Knee inputs -->
+      <div class="row" id="knee-inputs" style="display:none;">
+        <div>
+          <label for="axial">Axial (.npy)</label>
+          <input id="axial" type="file" name="axial" accept=".npy" onchange="fileUploaded(this)">
+        </div>
+        <div>
+          <label for="coronal">Coronal (.npy)</label>
+          <input id="coronal" type="file" name="coronal" accept=".npy" onchange="fileUploaded(this)">
+        </div>
+        <div>
+          <label for="sagittal">Sagittal (.npy)</label>
+          <input id="sagittal" type="file" name="sagittal" accept=".npy" onchange="fileUploaded(this)">
+        </div>
+      </div>
+
+      <button type="submit">Upload & Analyze</button>
+    </form>
+
+    {% if result %}
+      <div class="result">
+        <p><strong>Scan Type:</strong>
+          {{ 'Knee Injury (MRNet)' if scan_type == 'knee'
+             else ('Pneumonia (X-ray)' if scan_type == 'pneumonia'
+             else ('Skin Cancer' if scan_type == 'skin' else 'Brain Tumor')) }}
+        </p>
+        <p><strong>Result:</strong> {{ result }}</p>
+        <p><strong>Confidence:</strong> {{ confidence }}</p>
+        {% if extra and extra.device %}<p><strong>Device:</strong> {{ extra.device }}</p>{% endif %}
+
+        {% if scan_type == 'pneumonia' and extra and extra.dist %}
+          <div style="margin-top:10px">
+            <h4 style="margin:8px 0 6px">All probabilities</h4>
+            {% for cls, p in extra.dist.items() %}
+              <div class="prob">
+                <div style="width:160px">{{ cls }}</div>
+                <div class="bar"><div class="fill" style="width: {{ '%.1f' % (p*100) }}%"></div></div>
+                <div style="width:80px; text-align:right">{{ '%.2f' % p }}</div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      {% if image_file and scan_type != 'knee' %}
+        <div class="image-preview">
+          <img src="{{ url_for('static', filename=image_file) }}" alt="Uploaded Image">
+        </div>
+      {% endif %}
+    {% endif %}
+
+    <a class="back-link" href="{{ url_for('home') }}">← Back to Home</a>
+  </div>
+
+  <script>
+    function toggleInputs() {
+      const sel = document.getElementById('scan_type').value;
+      const singleWrap = document.getElementById('single-file-wrap');
+      const kneeWrap = document.getElementById('knee-inputs');
+      if (sel === 'knee') {
+        singleWrap.style.display = 'none';
+        kneeWrap.style.display = 'grid';
+      } else {
+        singleWrap.style.display = 'block';
+        kneeWrap.style.display = 'none';
+      }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      toggleInputs();
+
+      // animate probability fills
+      document.querySelectorAll('.fill').forEach(el=>{
+        const w = el.style.width;
+        el.style.width = "0";
+        setTimeout(()=>{ el.style.width = w; }, 100);
+      });
+    });
+
+    function fileUploaded(input){
+      if(input.files && input.files.length>0){
+        input.classList.add("uploaded");
+      }
+    }
+  </script>
+</body>
+</html>

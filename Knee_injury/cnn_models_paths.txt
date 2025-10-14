@@ -1,0 +1,9 @@
+D:\Intellimedicare\Knee_injury\cnn\cnn_axial_abnormal_5.pt
+D:\Intellimedicare\Knee_injury\cnn\cnn_axial_acl_7.pt
+D:\Intellimedicare\Knee_injury\cnn\cnn_axial_meniscus_17.pt
+D:\Intellimedicare\Knee_injury\cnn\cnn_coronal_abnormal_15.pt
+D:\Intellimedicare\Knee_injury\cnn\cnn_coronal_acl_4.pt
+D:\Intellimedicare\Knee_injury\cnn\cnn_coronal_meniscus_10.pt
+D:\Intellimedicare\Knee_injury\cnn\cnn_sagittal_abnormal_8.pt
+D:\Intellimedicare\Knee_injury\cnn\cnn_sagittal_acl_9.pt
+D:\Intellimedicare\Knee_injury\cnn\cnn_sagittal_meniscus_8.pt
