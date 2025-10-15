@@ -13,7 +13,7 @@ import google.generativeai as genai
 pytesseract.pytesseract.tesseract_cmd = r"C:\Users\dhana\AppData\Local\Programs\Tesseract-OCR\tesseract.exe"
 
 # Gemini API key (you can keep this or move to env var GEMINI_API_KEY)
-API_KEY = "AIzaSyBx4KoDKcnUEqsiEpLRhQgvcqzEhixyB4U"
+API_KEY = "#Replace your key"
 genai.configure(api_key=API_KEY)
 
 # Tesseract OCR settings (tweak if needed)
