@@ -187,11 +187,19 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 This application is for educational and research purposes only. It should not be used as a substitute for professional medical advice, diagnosis, or treatment. Always consult with qualified healthcare professionals for medical decisions.
 
-## 👨‍💻 Author
+## 👨‍💻 Authors
 
 **Lokesh Dhanaraj**
 - GitHub: [@loki07-07](https://github.com/loki07-07)
 - Email: dhanarajlokesh000@gmail.com
+
+**Aishwarya Shinde**
+- GitHub : [@aishwaryashinde26](https://github.com/aishwaryashinde26)
+- Email : aishwaryashinde7390@gmail.com
+
+**Prince Ransom AC**
+- Github : [@PrinceRansom7](https://github.com/PrinceRansom7)
+- Email :princeransom7@gmail.com
 
 ## 🙏 Acknowledgments
 
