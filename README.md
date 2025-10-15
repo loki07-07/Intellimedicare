@@ -173,8 +173,9 @@ The models are trained on various medical datasets:
 
 
 ## Output :
-[![Watch the video](https://www.google.com/url?sa=i&url=https%3A%2F%2Fblog.ipleaders.in%2Fhealth-healthcare-right-heath-questions-national-international-level%2F&psig=AOvVaw142-tDmpKmgtDowVCrluNR&ust=1760597334441000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCIDx7caEpZADFQAAAAAdAAAAABAE)](https://youtu.be/GVQVAPiBDkY)
+[![Watch the video](https://img.youtube.com/vi/GVQVAPiBDkY/maxresdefault.jpg)](https://youtu.be/GVQVAPiBDkY)
 
+### [Watch output on YouTube](https://youtu.be/GVQVAPiBDkY)
 ## 🤝 Contributing
 
 1. Fork the repository
