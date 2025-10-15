@@ -171,6 +171,10 @@ The models are trained on various medical datasets:
 
 *Note: Due to privacy and size constraints, datasets are not included in this repository.*
 
+
+## Output :
+[![Watch the video](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://youtu.be/GVQVAPiBDkY)
+
 ## 🤝 Contributing
 
 1. Fork the repository
