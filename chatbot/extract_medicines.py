@@ -7,7 +7,7 @@ import google.generativeai as genai
 
 # ------------- CONFIG -------------
 pytesseract.pytesseract.tesseract_cmd = r"C:\Users\dhana\AppData\Local\Programs\Tesseract-OCR\tesseract.exe"
-API_KEY = "AIzaSyBx4KoDKcnUEqsiEpLRhQgvcqzEhixyB4U"
+API_KEY = "#Replace your key"
 genai.configure(api_key=API_KEY)
 TESS_LANG = "eng"
 TESS_CONFIG = "--oem 3 --psm 6"
