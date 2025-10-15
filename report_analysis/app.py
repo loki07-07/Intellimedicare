@@ -10,7 +10,7 @@ from google import genai
 from google.genai import types as gat
 
 # ---------------- CONFIG ----------------
-API_KEY = 'AIzaSyBx4KoDKcnUEqsiEpLRhQgvcqzEhixyB4U'
+API_KEY = '#Replace your key'
 
 client = genai.Client(api_key=API_KEY)
 
