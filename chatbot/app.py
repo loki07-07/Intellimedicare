@@ -25,7 +25,7 @@ import random
 pytesseract.pytesseract.tesseract_cmd = r"C:\Users\dhana\AppData\Local\Programs\Tesseract-OCR\tesseract.exe"
 
 # Gemini API key (prefer env var: setx GEMINI_API_KEY "YOUR_KEY")
-API_KEY = 'AIzaSyBx4KoDKcnUEqsiEpLRhQgvcqzEhixyB4U'
+API_KEY = '#Replace Your Key'
 genai.configure(api_key=API_KEY)
 
 TESS_LANG = "eng"  # add +tam if needed: "eng+tam"
